@@ -1,17 +1,23 @@
 import json
 import pandas as pd
 
-df = pd.read_excel("comma.xlsx", sheet_name="pilkku")
+df = pd.read_excel("C:/Users/jonathan.albrecht/Documents/GitHub/SGTRI_2.0_python/data/xlsxtojson/comma.xlsx", sheet_name="pilkku")
+
+df_new = df[df['_idTags'].notnull()]
+
+for i in range(1, 31):
+    df_new = df_new[df_new['V'+str(i)] != "non"]
 
 recs = []
-#separate _idTags into individual words and create a array for them
+
 #OR delete the idTags column from the comma.xlsx and from the list below (and fix the numbers)
 #good to have: a smarter numbering system for the rows in the code
 
-#"split tags at semicolon and check for duplicates and then create a list with ID:s"
-for i, row in df.iterrows():
+for i, row in df_new.iterrows():
+    tagArray = row[3].split(";");
+
     rec = {
-        "ID": row[0],"No_Controle" : row[1],"textQuestion": row[2],"_idTags": row[3],"V1": row[4],
+        "ID": row[0],"No_Controle" : row[1],"textQuestion": row[2],"_idTags": tagArray,"V1": row[4],
         "V2": row[5],"V3": row[6],"V1A": row[7],"V4": row[8],"V4A": row[9],"V5": row[10],"V6": row[11],
         "V7": row[12],"V8": row[13],"V9": row[14],"V10": row[15],"V11": row[16],"V12": row[17],"V13": row[18],
         "V14": row[19],"V15": row[20],"V16": row[21],"V17": row[22],"V5A": row[23],"V18": row[24],"V19": row[25],
