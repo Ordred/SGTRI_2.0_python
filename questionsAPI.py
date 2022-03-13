@@ -17,7 +17,7 @@ api = Api(app)
 
 class questionAPI(Resource):
     @app.route("/questions/<string:id>", methods=["GET"])
-    def get(name):
+    def getQuestion(name):
         question = mongo.db.questions.find_one_or_404({"_id": id})
         return Question(**question).to_json() 
 
@@ -34,7 +34,7 @@ class questionAPI(Resource):
 
 class tagAPI(Resource):
     @app.route("/tags/<string:id>", methods=["GET"])
-    def get(id):
+    def getTag(id):
         tag = mongo.db.tags.find_one_or_404({"_id": id})
         return Tag(**tag).to_json() 
 
