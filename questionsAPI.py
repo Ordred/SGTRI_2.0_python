@@ -11,14 +11,14 @@ from objectid import PydanticObjectId
 from tag import Tag
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://hesso:admin@hesso.q1q2q.mongodb.net/sgtri2?retryWrites=true&w=majority"
+app.config["MONGO_URI"] = "mongodb+srv://hesso:admin@hesso.q1q2q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 api = Api(app)
 
 class questionAPI(Resource):
-    @app.route("/questions/<string:id>", methods=["GET"])
-    def getQuestion(name):
-        question = mongo.db.questions.find_one_or_404({"_id": id})
+    @app.route("/questions/<int:id>", methods=["GET"])
+    def getQuestion(id):
+        question = mongo.db.questions.find_one_or_404({"No_Controle": id})
         return Question(**question).to_json() 
 
     def post(self):   
@@ -33,9 +33,9 @@ class questionAPI(Resource):
         return question.to_json()
 
 class tagAPI(Resource):
-    @app.route("/tags/<string:id>", methods=["GET"])
+    @app.route("/tags/<int:id>", methods=["GET"])
     def getTag(id):
-        tag = mongo.db.tags.find_one_or_404({"_id": id})
+        tag = mongo.db.tags.find_one_or_404({"id_int": id})
         return Tag(**tag).to_json() 
 
     def post(self):   
