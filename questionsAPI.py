@@ -12,7 +12,7 @@ from objectid import PydanticObjectId
 from tag import Tag
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://hesso:admin@hesso.q1q2q.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+app.config["MONGO_URI"] = "mongodb+srv://hesso:admin@hesso.q1q2q.mongodb.net/sgtri2?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 api = Api(app)
 
