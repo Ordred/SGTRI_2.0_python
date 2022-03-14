@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
+from motif import Motif
 from question import Question
 from flask_pymongo import PyMongo
 from objectid import PydanticObjectId
@@ -59,6 +60,23 @@ class tagAPI(Resource):
         insert_result = mongo.db.tags.insert_one(tag.to_bson())
         print(tag)
         return tag.to_json()
+
+class motifAPI(Resource):
+    @app.route("/motifs/<int:id>", methods=["GET"])
+    def getMotifByID(id):
+        motif = mongo.db.motifs.find_one_or_404({"id_int": id})
+        return Motif(**motif).to_json()
+
+    def post(self):   
+        raw_motif = request.get_json()
+        motif = Motif(**raw_motif)
+        motifAPI.postFinal(motif)
+
+    def postFinal(motif):
+        motif = Motif(**motif)
+        insert_result = mongo.db.motifs.insert_one(motif.to_bson())
+        print(motif)
+        return motif.to_json()
 
 api.add_resource(tagAPI, '/tags')  # '/tags' is our entry point for Users
 api.add_resource(questionAPI, '/questions')  # '/questions' is our entry point for Users
