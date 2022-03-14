@@ -78,8 +78,10 @@ class motifAPI(Resource):
         print(motif)
         return motif.to_json()
 
-api.add_resource(tagAPI, '/tags')  # '/tags' is our entry point for Users
-api.add_resource(questionAPI, '/questions')  # '/questions' is our entry point for Users
+api.add_resource(tagAPI, '/tags')  # '/tags' is our entry point for tags
+api.add_resource(questionAPI, '/questions')  # '/questions' is our entry point for questions
+api.add_resource(motifAPI, '/motifs')  # '/motifs' is our entry point for motifs
+
 
 if __name__ == '__main__':
     app.run()
