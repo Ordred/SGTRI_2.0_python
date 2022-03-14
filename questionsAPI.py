@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
 from motif import Motif
+from patient import Patient
 from question import Question
 from flask_pymongo import PyMongo
 from objectid import PydanticObjectId
@@ -78,9 +79,26 @@ class motifAPI(Resource):
         print(motif)
         return motif.to_json()
 
+class patientAPI(Resource):
+    @app.route("/patients/<string:id>", methods=["GET"])
+    def getPatientByID(id):
+        patient = mongo.db.patients.find_one_or_404({"_id": PydanticObjectId(id)})
+        return Patient(**patient).to_json()
+
+    def post(self):   
+        raw_patient = request.get_json()
+        patient = Patient(**raw_patient)
+        patientAPI.postFinal(patient)
+
+    def postFinal(patient):
+        insert_result = mongo.db.patients.insert_one(patient.to_bson())
+        print(patient)
+        return patient.to_json()
+
 api.add_resource(tagAPI, '/tags')  # '/tags' is our entry point for tags
 api.add_resource(questionAPI, '/questions')  # '/questions' is our entry point for questions
 api.add_resource(motifAPI, '/motifs')  # '/motifs' is our entry point for motifs
+api.add_resource(patientAPI, '/patients')  # '/patients' is our entry point for patients
 
 
 if __name__ == '__main__':
