@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask_restful import Api, Resource
 from question import Question
 from flask_pymongo import PyMongo
+from objectid import PydanticObjectId
 
 import fastapi
 
@@ -17,8 +18,13 @@ api = Api(app)
 
 class questionAPI(Resource):
     @app.route("/questions/<int:id>", methods=["GET"])
-    def getQuestionByID(id):
+    def getQuestionByIDint(id):
         question = mongo.db.questions.find_one_or_404({"No_Controle": id})
+        return Question(**question).to_json()
+
+    @app.route("/questions/<string:id>", methods=["GET"])
+    def getQuestionByIDstring(id):
+        question = mongo.db.questions.find_one_or_404({"_id": PydanticObjectId(id)})
         return Question(**question).to_json()
 
     def post(self):   
