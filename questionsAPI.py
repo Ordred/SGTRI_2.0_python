@@ -12,6 +12,7 @@ from fastapi.encoders import jsonable_encoder
 
 from objectid import PydanticObjectId
 from tag import Tag
+from motifquestion import MotifQuestion
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb+srv://hesso:admin@hesso.q1q2q.mongodb.net/sgtri2?retryWrites=true&w=majority"
@@ -79,26 +80,9 @@ class motifAPI(Resource):
         print(motif)
         return motif.to_json()
 
-class patientAPI(Resource):
-    @app.route("/patients/<string:id>", methods=["GET"])
-    def getPatientByID(id):
-        patient = mongo.db.patients.find_one_or_404({"_id": PydanticObjectId(id)})
-        return Patient(**patient).to_json()
-
-    def post(self):   
-        raw_patient = request.get_json()
-        patient = Patient(**raw_patient)
-        patientAPI.postFinal(patient)
-
-    def postFinal(patient):
-        insert_result = mongo.db.patients.insert_one(patient.to_bson())
-        print(patient)
-        return patient.to_json()
-
 api.add_resource(tagAPI, '/tags')  # '/tags' is our entry point for tags
 api.add_resource(questionAPI, '/questions')  # '/questions' is our entry point for questions
 api.add_resource(motifAPI, '/motifs')  # '/motifs' is our entry point for motifs
-api.add_resource(patientAPI, '/patients')  # '/patients' is our entry point for patients
 
 
 if __name__ == '__main__':

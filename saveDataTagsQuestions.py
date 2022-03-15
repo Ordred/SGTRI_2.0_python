@@ -1,5 +1,4 @@
 import json
-from django.test import tag
 from numpy import full
 import pandas as pd
 import secrets
@@ -7,7 +6,7 @@ import numpy as np
 
 from questionsAPI import questionAPI, tagAPI
 
-df = pd.read_excel("C:/Users/jonathan.albrecht/Documents/GitHub/SGTRI_2.0_python/comma.xlsx", sheet_name="pilkku")
+df = pd.read_excel("comma.xlsx", sheet_name="qswithtags")
 
 recs = []
 

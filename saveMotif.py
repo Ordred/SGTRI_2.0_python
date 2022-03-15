@@ -1,5 +1,4 @@
 import json
-from django.test import tag
 from numpy import True_, full
 import pandas as pd
 import secrets
@@ -7,7 +6,7 @@ import numpy as np
 
 from questionsAPI import motifAPI
 
-df = pd.read_excel("C:/Users/jonathan.albrecht/Documents/GitHub/SGTRI_2.0_python/motif_edited.xlsx", sheet_name="motif")
+df = pd.read_excel("motif_edited.xlsx", sheet_name="motif")
 
 motifs = []
 
