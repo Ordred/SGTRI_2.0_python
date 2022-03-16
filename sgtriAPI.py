@@ -36,7 +36,6 @@ class questionAPI(Resource):
         questionAPI.postFinal(question)
 
     def postFinal(question):
-        question = Question(**question)
         insert_result = mongo.db.questions.insert_one(question.to_bson())
         print(question)
         return question.to_json()
@@ -58,7 +57,6 @@ class tagAPI(Resource):
         tagAPI.postFinal(tag)
 
     def postFinal(tag):
-        tag = Tag(**tag)
         insert_result = mongo.db.tags.insert_one(tag.to_bson())
         print(tag)
         return tag.to_json()
@@ -75,7 +73,6 @@ class motifAPI(Resource):
         motifAPI.postFinal(motif)
 
     def postFinal(motif):
-        motif = Motif(**motif)
         insert_result = mongo.db.motifs.insert_one(motif.to_bson())
         print(motif)
         return motif.to_json()
@@ -92,7 +89,6 @@ class motifquestionAPI(Resource):
         motifquestionAPI.postFinal(qmotif)
 
     def postFinal(qmotif):
-        qmotif = MotifQuestion(**qmotif)
         insert_result = mongo.db.motifquestions.insert_one(qmotif.to_bson())
         print(qmotif)
         return qmotif.to_json()
