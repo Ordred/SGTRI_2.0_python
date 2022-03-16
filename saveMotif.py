@@ -3,8 +3,9 @@ from numpy import True_, full
 import pandas as pd
 import secrets
 import numpy as np
+from objectid import PydanticObjectId
 
-from questionsAPI import motifAPI
+from sgtriAPI import motifAPI
 
 df = pd.read_excel("motif_edited.xlsx", sheet_name="motif")
 
@@ -92,7 +93,7 @@ for i, row in df.iterrows():
 
     conditions = []
 
-    id = str(secrets.token_hex(12))
+    id = secrets.token_hex(12)
 
     for j in range(1, 15):
         if not isinstance(row['Condition '+str(j)], float):
@@ -100,7 +101,7 @@ for i, row in df.iterrows():
             
 
     rec = {
-        "ID": id,"id_int" : row[0], "category": row[1], "labels": labelArray,
+        "ID": PydanticObjectId(id), "id": str(id), "id_int" : row[0], "category": row[1], "labels": labelArray,
         "degrees": degreeArray, "glasgow": glasgow, "pupilles": pupilles,
         "pouls": pouls, "tah": tah, "index_de_choc": index_de_choc, 
         "fr": fr, "spo2": spo2, "peak_flow": peak_flow,

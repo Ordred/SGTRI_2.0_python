@@ -1,7 +1,8 @@
 import pandas as pd
 import secrets
 import numpy as np
-from questionsAPI import questionAPI, motifquestionAPI
+from objectid import PydanticObjectId
+from sgtriAPI import questionAPI, motifquestionAPI
 
 df = pd.read_excel("comma.xlsx", sheet_name="qswithmotif")
 recs = []
@@ -26,7 +27,7 @@ for i, row in df.iterrows():
             v_values.append(row['V'+str(j)])
 
     rec = {
-        "ID": id,"No_Controle" : row[0],"textQuestion": row[1], "vs":v_values
+        "ID": PydanticObjectId(id), "id": id, "No_Controle" : row[0],"textQuestion": row[1], "vs":v_values
         }
 
 
@@ -42,7 +43,7 @@ for i, row in df.iterrows():
             questionIDs = []
             questionIDs.append(id)
             recMotif = {
-                "ID": str(secrets.token_hex(12)), "idMotif": motif, "questions": questionIDs
+                "ID": PydanticObjectId(secrets.token_hex(12)), "id": str(secrets.token_hex(12)), "idMotif": motif, "questions": questionIDs
                 }
             fullMotifArray.append(recMotif)
         else:

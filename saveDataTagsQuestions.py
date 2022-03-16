@@ -3,8 +3,9 @@ from numpy import full
 import pandas as pd
 import secrets
 import numpy as np
+from objectid import PydanticObjectId
 
-from questionsAPI import questionAPI, tagAPI
+from sgtriAPI import questionAPI, tagAPI
 
 df = pd.read_excel("comma.xlsx", sheet_name="qswithtags")
 
@@ -16,21 +17,21 @@ tagNumber = 0
 
 for i, row in df.iterrows():
 
-    if not isinstance(row[3], float):
-        tagArray =  row[3].split(';')
+    if not isinstance(row[2], float):
+        tagArray =  row[2].split(';')
     else:
         tagArray = []
 
     v_values = []
 
-    id = str(secrets.token_hex(12))
+    id = secrets.token_hex(12)
 
     for j in range(1, 31):
         if row['V'+str(j)] not in ['non']:
             v_values.append(row['V'+str(j)])
 
     rec = {
-        "ID": id,"No_Controle" : row[1],"textQuestion": row[2], "vs":v_values
+        "ID": PydanticObjectId(str(id)), "id": id, "No_Controle" : row[0],"textQuestion": row[1], "vs":v_values
         }
 
     for tag in tagArray:
@@ -47,7 +48,7 @@ for i, row in df.iterrows():
             questionIDs.append(id)
             tagNumber = tagNumber+1
             recTag = {
-                "ID": str(secrets.token_hex(12)), "id_int": tagNumber, "name": tag, "questions": questionIDs
+                "ID": PydanticObjectId(str(secrets.token_hex(12))), "id": str(secrets.token_hex(12)), "id_int": tagNumber, "name": tag, "questions": questionIDs
                 }
             fullTagArray.append(recTag)
         else:

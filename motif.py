@@ -8,6 +8,7 @@ from fastapi.encoders import jsonable_encoder
 
 class Motif(BaseModel):
     ID: Optional[PydanticObjectId] = Field(None, alias="_id")
+    id: str
     id_int: int
     category: str
     degrees: List[str]

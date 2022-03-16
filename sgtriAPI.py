@@ -27,15 +27,15 @@ class questionAPI(Resource):
 
     @app.route("/questions/<string:id>", methods=["GET"])
     def getQuestionByIDstring(id):
-        question = mongo.db.questions.find_one_or_404({"_id": PydanticObjectId(id)})
+        question = mongo.db.questions.find_one_or_404({"id": PydanticObjectId(id)})
         return Question(**question).to_json()
 
     def post(self):   
-        raw_question = request.get_json()
-        question = Question(**raw_question)
+        question = request.get_json()
         questionAPI.postFinal(question)
 
-    def postFinal(question):
+    def postFinal(raw_question):
+        question = Question(**raw_question)
         insert_result = mongo.db.questions.insert_one(question.to_bson())
         print(question)
         return question.to_json()
@@ -52,11 +52,11 @@ class tagAPI(Resource):
         return Tag(**tag).to_json() 
 
     def post(self):   
-        raw_tag = request.get_json()
-        tag = Tag(**raw_tag)
+        tag = request.get_json()
         tagAPI.postFinal(tag)
 
-    def postFinal(tag):
+    def postFinal(raw_tag):
+        tag = Tag(**raw_tag)
         insert_result = mongo.db.tags.insert_one(tag.to_bson())
         print(tag)
         return tag.to_json()
@@ -68,11 +68,11 @@ class motifAPI(Resource):
         return Motif(**motif).to_json()
 
     def post(self):   
-        raw_motif = request.get_json()
-        motif = Motif(**raw_motif)
+        motif = request.get_json()
         motifAPI.postFinal(motif)
 
-    def postFinal(motif):
+    def postFinal(raw_motif):
+        motif = Motif(**raw_motif)
         insert_result = mongo.db.motifs.insert_one(motif.to_bson())
         print(motif)
         return motif.to_json()
@@ -84,11 +84,11 @@ class motifquestionAPI(Resource):
         return MotifQuestion(**qmotif).to_json()
 
     def post(self):   
-        raw_qm = request.get_json()
-        qmotif = MotifQuestion(**raw_qm)
-        motifquestionAPI.postFinal(qmotif)
+        qm = request.get_json()
+        motifquestionAPI.postFinal(qm)
 
-    def postFinal(qmotif):
+    def postFinal(raw_qm):
+        qmotif = MotifQuestion(**raw_qm)
         insert_result = mongo.db.motifquestions.insert_one(qmotif.to_bson())
         print(qmotif)
         return qmotif.to_json()
@@ -96,15 +96,15 @@ class motifquestionAPI(Resource):
 class patientAPI(Resource):
     @app.route("/patients/<string:id>", methods=["GET"])
     def getPatientByID(id):
-        patient = mongo.db.patients.find_one_or_404({"_id": PydanticObjectId(id)})
+        patient = mongo.db.patients.find_one_or_404({"id": PydanticObjectId(id)})
         return Patient(**patient).to_json()
 
     def post(self):   
-        raw_patient = request.get_json()
-        patient = Patient(**raw_patient)
+        patient = request.get_json()
         patientAPI.postFinal(patient)
 
-    def postFinal(patient):
+    def postFinal(raw_patient):
+        patient = Patient(**raw_patient)
         insert_result = mongo.db.patients.insert_one(patient.to_bson())
         print(patient)
         return patient.to_json()
@@ -116,5 +116,5 @@ api.add_resource(motifAPI, '/motifs')  # '/motifs' is our entry point for motifs
 api.add_resource(patientAPI, '/patients')  # '/patients' is our entry point for patients
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run()
 
