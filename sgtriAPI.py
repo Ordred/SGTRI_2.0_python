@@ -121,5 +121,5 @@ api.add_resource(motifAPI, '/motifs')  # '/motifs' is our entry point for motifs
 api.add_resource(patientAPI, '/patients')  # '/patients' is our entry point for patients
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0")
 
