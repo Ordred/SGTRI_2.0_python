@@ -8,9 +8,8 @@ from fastapi.encoders import jsonable_encoder
 
 class MotifQuestion(BaseModel):
     ID: Optional[PydanticObjectId] = Field(None, alias="_id")
-    id: str
     idMotif: int
-    questions: List[str]
+    questions: List[int]
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)

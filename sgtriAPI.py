@@ -99,6 +99,11 @@ class patientAPI(Resource):
         patient = mongo.db.patients.find_one_or_404({"id": PydanticObjectId(id)})
         return Patient(**patient).to_json()
 
+    @app.route("/patients/<int:id>", methods=["GET"])
+    def getPatientByIDint(id):
+        patient = mongo.db.patients.find_one_or_404({"id_int": id})
+        return Patient(**patient).to_json()
+
     def post(self):   
         patient = request.get_json()
         patientAPI.postFinal(patient)

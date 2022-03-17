@@ -8,10 +8,9 @@ from fastapi.encoders import jsonable_encoder
 
 class Tag(BaseModel):
     ID: Optional[PydanticObjectId] = Field(None, alias="_id")
-    id: str
     id_int: int
     name: str
-    questions: List[str]
+    questions: List[int]
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)

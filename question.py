@@ -8,7 +8,6 @@ from fastapi.encoders import jsonable_encoder
 
 class Question(BaseModel):
     ID: Optional[PydanticObjectId] = Field(None, alias="_id")
-    id: str
     No_Controle: int
     textQuestion: str
     vs: List[str]

@@ -15,6 +15,8 @@ fullTagArray = []
 
 tagNumber = 0
 
+id = 0
+
 for i, row in df.iterrows():
 
     if not isinstance(row[2], float):
@@ -24,15 +26,17 @@ for i, row in df.iterrows():
 
     v_values = []
 
-    id = secrets.token_hex(12)
-
     for j in range(1, 31):
         if row['V'+str(j)] not in ['non']:
             v_values.append(row['V'+str(j)])
 
+    id = id+1
+
     rec = {
-        "ID": PydanticObjectId(str(id)), "id": id, "No_Controle" : row[0],"textQuestion": row[1], "vs":v_values
+        "ID": PydanticObjectId(secrets.token_hex(12)), "id_int": id, "No_Controle" : row[0],"textQuestion": row[1], "vs":v_values
         }
+
+
 
     for tag in tagArray:
 
@@ -48,7 +52,7 @@ for i, row in df.iterrows():
             questionIDs.append(id)
             tagNumber = tagNumber+1
             recTag = {
-                "ID": PydanticObjectId(str(secrets.token_hex(12))), "id": str(secrets.token_hex(12)), "id_int": tagNumber, "name": tag, "questions": questionIDs
+                "ID": PydanticObjectId(str(secrets.token_hex(12))), "id_int": tagNumber, "name": tag, "questions": questionIDs
                 }
             fullTagArray.append(recTag)
         else:

@@ -22,8 +22,8 @@ class Patient(BaseModel):
     frequenceRespiratoire: float
     cetonemie: float
     douleurs: int
-    motifs: List[str]
-    questions: List[str]
+    motifs: List[int]
+    questions: List[int]
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)

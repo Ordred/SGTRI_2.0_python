@@ -7,6 +7,7 @@ from sgtriAPI import questionAPI, motifquestionAPI
 df = pd.read_excel("comma.xlsx", sheet_name="qswithmotif")
 recs = []
 fullMotifArray = []
+id = 0
 
 for i, row in df.iterrows():
 
@@ -20,14 +21,14 @@ for i, row in df.iterrows():
 
     v_values = []
 
-    id = str(secrets.token_hex(12))
+    id = id+1
 
     for j in range(1, 31):
         if row['V'+str(j)] not in ['non', '']:
             v_values.append(row['V'+str(j)])
 
     rec = {
-        "ID": PydanticObjectId(id), "id": id, "No_Controle" : row[0],"textQuestion": row[1], "vs":v_values
+        "ID": PydanticObjectId(secrets.token_hex(12)), "id_int": id, "No_Controle" : row[0],"textQuestion": row[1], "vs":v_values
         }
 
 
@@ -43,7 +44,7 @@ for i, row in df.iterrows():
             questionIDs = []
             questionIDs.append(id)
             recMotif = {
-                "ID": PydanticObjectId(secrets.token_hex(12)), "id": str(secrets.token_hex(12)), "idMotif": motif, "questions": questionIDs
+                "ID": PydanticObjectId(secrets.token_hex(12)), "idMotif": motif, "questions": questionIDs
                 }
             fullMotifArray.append(recMotif)
         else:
