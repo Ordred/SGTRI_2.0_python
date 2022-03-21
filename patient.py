@@ -6,6 +6,7 @@ import pydantic
 import fastapi
 from fastapi.encoders import jsonable_encoder
 
+
 class Patient(BaseModel):
     ID: Optional[PydanticObjectId] = Field(None, alias="_id")
     id_int: int
@@ -18,10 +19,12 @@ class Patient(BaseModel):
     spo2: float
     peak_flowMin: float
     peak_flowCM: float
-    glyceme: float
+    glycemie: float
     frequenceRespiratoire: float
     cetonemie: float
     douleurs: int
+    pulse: int
+    temperature: float
     motifs: List[int]
     questions: List[int]
 
