@@ -38,7 +38,7 @@ class questionAPI(Resource):
     def post(self):
         question = request.get_json()
         questionAPI.postFinal(question)
-        
+
     @cross_origin()
     def postFinal(raw_question):
         question = Question(**raw_question)
@@ -150,4 +150,4 @@ api.add_resource(motifAPI, '/motifs')
 api.add_resource(patientAPI, '/patients')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0")
