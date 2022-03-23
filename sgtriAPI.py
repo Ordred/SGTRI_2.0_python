@@ -1,4 +1,5 @@
-from flask import Flask, request
+from tabnanny import check
+from flask import Flask, jsonify, request
 from flask_cors import cross_origin
 from flask_restful import Api, Resource
 from motif import Motif
@@ -137,6 +138,87 @@ class patientAPI(Resource):
         insert_result = mongo.db.patients.insert_one(patient.to_bson())
         print(patient)
         return patient.to_json()
+
+class checkVitalsAPI(Resource):
+
+    @app.route("/checkGlasgow/<int:glasgow>", methods=["GET"])
+    @cross_origin()
+    def checkGlasgow(glasgow):
+        return check(glasgow, 0, 8, 9, 13, 14, 15)
+    
+    @app.route("/checkPulse/<int:pulse>", methods=["GET"])
+    @cross_origin()
+    def checkPulse(pulse):
+        if pulse <= 40 or pulse >= 150: return jsonify({"degree": 1})
+        elif pulse in [40-50] or pulse in [130-150]: return jsonify({"degree": 2})
+        elif pulse in [51-129]: return jsonify({"degree": 3})
+
+    @app.route("/checkTAS/<int:tas>", methods=["GET"])
+    @cross_origin()
+    def checkTAS(tas):
+        if tas >= 230 or tas <= 70: return jsonify({"degree": 1})
+        elif tas in [181-229] or tas in [71-90]: return jsonify({"degree": 2})
+        elif tas in [91-180]: return jsonify({"degree": 3})
+        
+    
+    @app.route("/checkTAD/<int:tad>", methods=["GET"])
+    @cross_origin()
+    def checkTAD(tad):
+        if tad >= 130: return jsonify({"degree": 1})
+        elif tad in [115-129]: return jsonify({"degree": 2})
+        elif tad <= 115: return jsonify({"degree": 3})
+        
+    @app.route("/checkIDC/<int:pulse>/<int:tas>", methods=["GET"])
+    @cross_origin()
+    def checkIDC(pulse, tas):
+        if pulse > tas: return jsonify({"degree": 2})
+        elif pulse <= tas: return jsonify({"degree": 3})
+    
+    @app.route("/checkFR/<int:fr>", methods=["GET"])
+    @cross_origin()
+    def checkFR(fr):
+        if fr >= 35: return jsonify({"degree": 1})
+        elif fr in [25-35] or fr in [9-12]: return jsonify({"degree": 2})
+        elif fr in [13-24]: return jsonify({"degree": 3})
+    
+    @app.route("/checkCYANOSE/<string:cyanose>", methods=["GET"])
+    @cross_origin()
+    def checkCYANOSE(cyanose):
+        if cyanose == 'TRUE': return jsonify({"degree": 2})
+        else: return jsonify({"degree": 3})
+
+    @app.route("/checkSPO2/<int:spo2>", methods=["GET"])
+    @cross_origin()
+    def checkSPO2(spo2):
+        if spo2 < 90 : return jsonify({"degree": 1})
+        elif spo2 in [90-93]: return jsonify({"degree": 2})
+        elif spo2 in [94-100]: return jsonify({"degree": 3})
+    
+    @app.route("/checkPEAKFL/<int:peakfl>", methods=["GET"])
+    @cross_origin()
+    def checkPEAKFL(peakfl):
+        if peakfl <= 50 : return jsonify({"degree": 2})
+        elif peakfl >= 50 : return jsonify({"degree": 3})
+    
+    @app.route("/checkTEMP/<float:temp>", methods=["GET"])
+    @cross_origin()
+    def checkTEMP(temp):
+        if temp < 32 : return jsonify({"degree": 1})
+        elif temp in [32-35] or temp > 40: return jsonify({"degree": 2})
+        elif temp in [35.1-40]: return jsonify({"degree": 3})
+    
+    @app.route("/checkSUGAR/<float:sugar>", methods=["GET"])
+    @cross_origin()
+    def checkSUGAR(sugar):
+        if sugar < 4 or sugar > 25 : return jsonify({"degree": 2})
+        elif sugar in [4-24.9]: return jsonify({"degree": 3})
+
+    @app.route("/checkACENTONURIA/<float:acen>", methods=["GET"])
+    @cross_origin()
+    def checkACENTONURIA(acen):
+        if acen > 0.6: return jsonify({"degree": 2})
+        elif acen < 0.6: return jsonify({"degree": 3})
+    
 
 
 # '/motifquestions' is our entry point for the questions for different motifs
