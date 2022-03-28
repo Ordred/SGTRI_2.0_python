@@ -155,7 +155,7 @@ class checkVitalsAPI(Resource):
     @cross_origin()
     def checkPulse(pulse):
         if pulse <= 40 or pulse >= 150: return jsonify({"degree": 1})
-        elif pulse in range[40, 50] or pulse in range(130,150): return jsonify({"degree": 2})
+        elif pulse in range(40, 50) or pulse in range(130,150): return jsonify({"degree": 2})
         elif pulse in range(51,129): return jsonify({"degree": 3})
 
     @app.route("/checkTAS/<int:tas>", methods=["GET"])
