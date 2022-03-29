@@ -202,9 +202,9 @@ class checkVitalsAPI(Resource):
 
     @app.route("/checkPUPILLES/<string:pupilles>", methods=["GET"])
     @cross_origin()
-    def checkPUPILLES(cyanose):
-        if cyanose == 'NORMALES': return jsonify({"degree": 2})
-        else: return jsonify({"degree": 3})
+    def checkPUPILLES(pupilles):
+        if pupilles == 'NORMALES': return jsonify({"degree": 4})
+        else: return jsonify({"degree": 2})
 
     @app.route("/checkSPO2/<int:spo2>", methods=["GET"])
     @cross_origin()
