@@ -16,7 +16,7 @@ from tag import Tag
 from motifquestion import MotifQuestion
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb+srv://hesso:admin@hesso.q1q2q.mongodb.net/sgtri2?retryWrites=true&w=majority"
+app.config["MONGO_URI"] = "mongodb+srv://hesso:LrnKxTD4CMngTQph@hesso.q1q2q.mongodb.net/sgtri2?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 api = Api(app)
 
@@ -203,9 +203,9 @@ class checkVitalsAPI(Resource):
 
     @app.route("/checkPUPILLES/<string:pupilles>", methods=["GET"])
     @cross_origin()
-    def checkPUPILLES(cyanose):
-        if cyanose == 'NORMALES': return jsonify({"degree": 2})
-        else: return jsonify({"degree": 3})
+    def checkPUPILLES(pupilles):
+        if pupilles == 'NORMALES': return jsonify({"degree": 3})
+        else: return jsonify({"degree": 2})
 
     @app.route("/checkSPO2/<int:spo2>", methods=["GET"])
     @cross_origin()
