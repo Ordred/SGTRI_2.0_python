@@ -225,16 +225,17 @@ class checkVitalsAPI(Resource):
     @cross_origin()
     def checkTEMP(temp):
         if temp < 32 : return jsonify({"degree": 1})
-        elif temp in range(31,36) or temp > 40: return jsonify({"degree": 2})
-        elif temp in range(35.0,40.1): return jsonify({"degree": 3})
+        elif temp in range(31,36, 0.01) or temp > 40: return jsonify({"degree": 2})
+        elif temp in range(35.0,40.1, 0.01): return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
     
     @app.route("/checkSUGAR/<float:sugar>", methods=["GET"])
     @cross_origin()
     def checkSUGAR(sugar):
         if sugar < 4 or sugar > 25 : return jsonify({"degree": 2})
-        elif sugar in range(3.9,25.0): return jsonify({"degree": 3})
+        elif sugar in range(3.9,25.0, 0.01): return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
+
     @app.route("/checkACENTONURIA/<float:acen>", methods=["GET"])
     @cross_origin()
     def checkACENTONURIA(acen):
