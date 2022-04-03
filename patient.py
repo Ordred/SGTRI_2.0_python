@@ -26,7 +26,7 @@ class Patient(BaseModel):
     pulse: int
     temperature: float
     motifs: List[int]
-    questions: List[int]
+    questions: List
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)
