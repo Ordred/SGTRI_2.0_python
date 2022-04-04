@@ -10,6 +10,7 @@ from fastapi.encoders import jsonable_encoder
 class Patient(BaseModel):
     ID: Optional[PydanticObjectId] = Field(None, alias="_id")
     id_int: int
+    gender: str
     genre: int
     age: int
     glasgow: int

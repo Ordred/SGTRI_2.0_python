@@ -1,3 +1,4 @@
+import math
 from tabnanny import check
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin
@@ -242,6 +243,17 @@ class checkVitalsAPI(Resource):
         if acen > 0.6: return jsonify({"degree": 2})
         elif acen < 0.6: return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
+
+    @app.route("/checkDEP/<string:gender>/<int:age>/<int:size>", methods=["GET"])
+    @cross_origin()
+    def checkDEP(gender, age, size):
+        dep = 0
+        if gender == "m":
+            dep = math.exp((0.544*math.log(age))-(0.0151*age)-(74.7/size)+5.48)
+        if gender == "w":
+            dep = math.exp((0.376*math.log(age))-(0.0120*age)-(58.8/size)+5.63)
+        return jsonify({"dep": int(dep)})
+
 
 # '/motifquestions' is our entry point for the questions for different motifs
 api.add_resource(motifquestionAPI, '/motifquestions')
