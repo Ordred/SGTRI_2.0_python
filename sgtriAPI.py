@@ -177,7 +177,7 @@ class checkVitalsAPI(Resource):
         elif tad <= 115: return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
         
-    @app.route("/checkIDC/<int:pulse>/<int:tas>", methods=["GET"])
+    @app.route("/checkIDC/<int:pulse>/<float:tas>", methods=["GET"])
     @cross_origin()
     def checkIDC(pulse, tas):
         if pulse > tas: return jsonify({"degree": 2})
