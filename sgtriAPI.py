@@ -43,7 +43,10 @@ class questionAPI(Resource):
 
     @cross_origin()
     def postFinal(raw_question):
+        questions = mongo.db.questions.find().sort('No_Controle', -1);
         question = Question(**raw_question)
+        lastQuestion = Question(**questions[0])
+        question.No_Controle = lastQuestion.No_Controle + 1
         insert_result = mongo.db.questions.insert_one(question.to_bson())
         print(question)
         return question.to_json()
@@ -68,7 +71,10 @@ class tagAPI(Resource):
         tagAPI.postFinal(tag)
     @cross_origin()
     def postFinal(raw_tag):
+        tags = mongo.db.tags.find().sort('id_int', -1);
         tag = Tag(**raw_tag)
+        lastTag = Tag(**tags[0])
+        tag.id_int = lastTag.id_int + 1
         insert_result = mongo.db.tags.insert_one(tag.to_bson())
         print(tag)
         return tag.to_json()
@@ -89,6 +95,9 @@ class motifAPI(Resource):
     @cross_origin()
     def postFinal(raw_motif):
         motif = Motif(**raw_motif)
+        motifs = mongo.db.motifs.find().sort('id_int', -1);
+        lastMotif = Motif(**motifs[0])
+        motif.id_int = lastMotif.id_int + 1
         insert_result = mongo.db.motifs.insert_one(motif.to_bson())
         print(motif)
         return motif.to_json()
@@ -136,6 +145,9 @@ class patientAPI(Resource):
     @cross_origin()
     def postFinal(raw_patient):
         patient = Patient(**raw_patient)
+        patients = mongo.db.patients.find().sort('id_int', -1);
+        lastPatient = Patient(**patients[0])
+        patient.id_int = lastPatient.id_int + 1
         insert_result = mongo.db.patients.insert_one(patient.to_bson())
         print(patient)
         return patient.to_json()
@@ -266,4 +278,4 @@ api.add_resource(motifAPI, '/motifs')
 api.add_resource(patientAPI, '/patients')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run()
