@@ -137,6 +137,13 @@ class patientAPI(Resource):
         patient = mongo.db.patients.find_one_or_404({"id_int": id})
         return Patient(**patient).to_json()
 
+    @app.route("/patients/<int:id>", methods=["POST"])
+    @cross_origin()
+    def postPatientByIDint(id):
+        img = request.data
+        mongo.db.patients.update_one({'id_int':id},{ "$set": { 'image': img } })
+        return jsonify({"degree": 3})
+    
     @cross_origin()
     def post(self):
         patient = request.get_json()
