@@ -22,7 +22,7 @@ app.config["MONGO_URI"] = "mongodb+srv://hesso:LrnKxTD4CMngTQph@hesso.q1q2q.mong
 mongo = PyMongo(app)
 api = Api(app)
 
-
+#Methods to get and post question data
 class questionAPI(Resource):
     @app.route("/questions/<int:id>", methods=["GET"])
     @cross_origin()
@@ -52,7 +52,7 @@ class questionAPI(Resource):
         print(question)
         return question.to_json()
 
-
+#Methods to get and post tag data
 class tagAPI(Resource):
 
     @app.route("/tags/<int:id>", methods=["GET"])
@@ -80,7 +80,7 @@ class tagAPI(Resource):
         print(tag)
         return tag.to_json()
 
-
+#Methods to get and post motif data
 class motifAPI(Resource):
     @app.route("/motifs/<int:id>", methods=["GET"])
     @cross_origin()
@@ -103,7 +103,7 @@ class motifAPI(Resource):
         print(motif)
         return motif.to_json()
 
-
+#Methods to get and post motifs connected to questions data
 class motifquestionAPI(Resource):
     @app.route("/motifquestions/<int:id>", methods=["GET"])
     @cross_origin()
@@ -123,7 +123,7 @@ class motifquestionAPI(Resource):
         print(qmotif)
         return qmotif.to_json()
 
-
+#Methods to get and post patient data
 class patientAPI(Resource):
     @app.route("/patients/<string:id>", methods=["GET"])
     @cross_origin()
@@ -160,6 +160,7 @@ class patientAPI(Resource):
         print(patient)
         return patient.to_json()
 
+#Methods to get and post values to get degrees for the sent values
 class checkVitalsAPI(Resource):
 
     @app.route("/checkGlasgow/<int:glasgow>", methods=["GET"])
