@@ -9,6 +9,7 @@ from question import Question
 from flask_pymongo import PyMongo
 from objectid import PydanticObjectId
 import fastapi
+import numpy as np
 
 from fastapi.encoders import jsonable_encoder
 
@@ -245,15 +246,15 @@ class checkVitalsAPI(Resource):
     @cross_origin()
     def checkTEMP(temp):
         if temp < 32.0 : return jsonify({"degree": 1})
-        elif temp in range(31,36, 0.01) or temp > 40.0: return jsonify({"degree": 2})
-        elif temp in range(35.0,40.1, 0.01): return jsonify({"degree": 3})
+        elif temp in np.arange(31,36, 0.01) or temp > 40.0: return jsonify({"degree": 2})
+        elif temp in np.arange(35.0,40.1, 0.01): return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
     
     @app.route("/checkSUGAR/<float:sugar>", methods=["GET"])
     @cross_origin()
     def checkSUGAR(sugar):
         if sugar < 4.0 or sugar > 25.0 : return jsonify({"degree": 2})
-        elif sugar in range(3.9,25.0, 0.01): return jsonify({"degree": 3})
+        elif sugar in np.arange(3.9,25.0, 0.01): return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
 
     @app.route("/checkACENTONURIA/<float:acen>", methods=["GET"])
