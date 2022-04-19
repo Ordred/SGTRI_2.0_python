@@ -8,6 +8,7 @@ from patient import Patient
 from question import Question
 from flask_pymongo import PyMongo
 from objectid import PydanticObjectId
+from bson import json_util
 import fastapi
 import numpy as np
 
@@ -125,6 +126,13 @@ class motifquestionAPI(Resource):
 
 #Methods to get and post patient data
 class patientAPI(Resource):
+    @app.route("/patients", methods=["GET"])
+    @cross_origin()
+    def getAllPatients():
+        patients = mongo.db.patients.find()
+        documents = [doc for doc in patients]
+        return json_util.dumps({'patientsList': documents})
+
     @app.route("/patients/<string:id>", methods=["GET"])
     @cross_origin()
     def getPatientByID(id):
@@ -159,6 +167,12 @@ class patientAPI(Resource):
         insert_result = mongo.db.patients.insert_one(patient.to_bson())
         print(patient)
         return patient.to_json()
+
+    @app.route("/patients/<int:id>", methods=["DELETE"])
+    @cross_origin()
+    def deletePatientByIDint(id):
+        mongo.db.patients.delete_one({"id_int": id})
+        return "Patient id " + str(id) + " deleted"
 
 #Methods to get and post values to get degrees for the sent values
 class checkVitalsAPI(Resource):
