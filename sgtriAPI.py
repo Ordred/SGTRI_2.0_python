@@ -11,7 +11,7 @@ from objectid import PydanticObjectId
 from bson import json_util
 import fastapi
 import numpy as np
-
+from bson.json_util import dumps, loads
 from fastapi.encoders import jsonable_encoder
 
 from objectid import PydanticObjectId
@@ -144,7 +144,8 @@ class patientAPI(Resource):
     @cross_origin()
     def getPatientByIDint(id):
         patient = list(mongo.db.patients.find_one_or_404({"id_int": id}))
-        return patient
+        json_data = dumps(patient)
+        return json_data
 
     @app.route("/patients/<int:id>", methods=["POST"])
     @cross_origin()
