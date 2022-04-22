@@ -149,9 +149,10 @@ class patientAPI(Resource):
     @app.route("/patients/<int:id>", methods=["POST"])
     @cross_origin()
     def postPatientByIDint(id):
-        img = request.data
-        mongo.db.patients.update_one({'id_int':id},{ "$set": { 'image': img } })
-        return jsonify({"degree": 3})
+        img = request.get_data()
+        print(img)
+        mongo.db.patients.update_one({'id_int':id},{ "$set": { "image":img } })
+        return "done"
     
     @cross_origin()
     def post(self):

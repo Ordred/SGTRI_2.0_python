@@ -1,3 +1,5 @@
+import base64
+from msilib.schema import Binary
 import secrets
 from typing import List, Optional
 from pydantic import BaseModel, Field
@@ -5,7 +7,7 @@ from objectid import PydanticObjectId
 import pydantic
 import fastapi
 from fastapi.encoders import jsonable_encoder
-
+import bson
 
 class Patient(BaseModel):
     ID: Optional[PydanticObjectId] = Field(None, alias="_id")
@@ -28,6 +30,7 @@ class Patient(BaseModel):
     temperature: float
     motifs: List[int]
     questions: List
+    image: bson.binary.BINARY_SUBTYPE = 0
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)
