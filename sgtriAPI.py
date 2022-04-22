@@ -143,8 +143,8 @@ class patientAPI(Resource):
     @app.route("/patients/<int:id>", methods=["GET"])
     @cross_origin()
     def getPatientByIDint(id):
-        patient = mongo.db.patients.find_one_or_404({"id_int": id})
-        return jsonify(Patient(**patient))
+        patient = list(mongo.db.patients.find_one_or_404({"id_int": id}))
+        return patient
 
     @app.route("/patients/<int:id>", methods=["POST"])
     @cross_origin()
