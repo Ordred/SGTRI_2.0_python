@@ -143,9 +143,10 @@ class patientAPI(Resource):
     @app.route("/patients/<int:id>", methods=["GET"])
     @cross_origin()
     def getPatientByIDint(id):
-        patient = list(mongo.db.patients.find_one_or_404({"id_int": id}))
-        json_data = dumps(patient)
-        return json_data
+        patient = mongo.db.patients.find_one_or_404(
+        {"id": PydanticObjectId(id)})
+        return Patient(**patient).to_json()
+
 
     @app.route("/patients/<int:id>", methods=["POST"])
     @cross_origin()
