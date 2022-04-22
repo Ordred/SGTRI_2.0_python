@@ -30,7 +30,7 @@ class Patient(BaseModel):
     temperature: float
     motifs: List[int]
     questions: List
-    image: base64
+    image: bytes
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)
