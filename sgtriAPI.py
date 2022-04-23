@@ -147,13 +147,20 @@ class patientAPI(Resource):
         {"id": PydanticObjectId(id)})
         return Patient(**patient).to_json()
 
-
-    @app.route("/patients/<int:id>", methods=["POST"])
+    @app.route("/patients/pictures/<int:id>", methods=["GET"])
     @cross_origin()
-    def postPatientByIDint(id):
+    def getPatientImgByIDint(id):
+        imgdata = mongo.db.patients.find_one_or_404({"id_int": id})
+        imgjson = jsonify(imgdata)
+        print(imgjson)
+        return imgjson
+
+    @app.route("/patients/pictures/<int:id>", methods=["POST"])
+    @cross_origin()
+    def postPatientImgByIDint(id):
         img = request.get_data()
         print(img)
-        mongo.db.patients.update_one({'id_int':id},{ "$set": { "image":img } })
+        mongo.db.patients.update_one({"id_int":id},{ "$set": { "image":img } })
         return "done"
     
     @cross_origin()
