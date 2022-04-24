@@ -26,6 +26,13 @@ api = Api(app)
 
 #Methods to get and post question data
 class questionAPI(Resource):
+    @app.route("/questions", methods=["GET"])
+    @cross_origin()
+    def getAll137Questions():
+        questions = mongo.db.questions.find()
+        documents = [doc for doc in questions]
+        return json_util.dumps({'questionsList': documents})
+        
     @app.route("/questions/<int:id>", methods=["GET"])
     @cross_origin()
     def getQuestionByIDint(id):
@@ -45,7 +52,7 @@ class questionAPI(Resource):
         questionAPI.postFinal(question)
 
     def postFinal(raw_question):
-        questions = mongo.db.questions.find().sort('No_Controle', -1);
+        questions = list(mongo.db.questions.find().sort('No_Controle', -1))
         question = Question(**raw_question)
         if questions: 
             lastQuestion = Question(**questions[0])
@@ -75,7 +82,7 @@ class tagAPI(Resource):
         tagAPI.postFinal(tag)
 
     def postFinal(raw_tag):
-        tags = mongo.db.tags.find().sort('id_int', -1);
+        tags = list(mongo.db.tags.find().sort('id_int', -1))
         tag = Tag(**raw_tag)
         if tags is not []:
             lastTag = Tag(**tags[0])
@@ -102,7 +109,7 @@ class motifAPI(Resource):
 
     def postFinal(raw_motif):
         motif = Motif(**raw_motif)
-        motifs = mongo.db.motifs.find().sort('id_int', -1);
+        motifs = list(mongo.db.motifs.find().sort('id_int', -1))
         if motifs:
             lastMotif = Motif(**motifs[0])
             motif.id_int = lastMotif.id_int + 1
@@ -185,7 +192,8 @@ class patientAPI(Resource):
     @cross_origin()
     def postFinal(raw_patient):
         patient = Patient(**raw_patient)
-        patients = mongo.db.patients.find().sort('id_int', -1);
+        patients = list(mongo.db.patients.find().sort('id_int', -1))
+        print(patients)
         if patients:
             lastPatient = Patient(**patients[0])
             patient.id_int = lastPatient.id_int + 1
@@ -311,7 +319,7 @@ class checkVitalsAPI(Resource):
         dep = 0
         if gender == "m":
             dep = math.exp((0.544*math.log(age))-(0.0151*age)-(74.7/size)+5.48)
-        if gender == "w":
+        if gender == "f":
             dep = math.exp((0.376*math.log(age))-(0.0120*age)-(58.8/size)+5.63)
         return jsonify({"dep": int(dep)})
 
