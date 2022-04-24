@@ -47,7 +47,7 @@ class questionAPI(Resource):
     def postFinal(raw_question):
         questions = mongo.db.questions.find().sort('No_Controle', -1);
         question = Question(**raw_question)
-        if questions is not []: 
+        if questions: 
             lastQuestion = Question(**questions[0])
             question.No_Controle = lastQuestion.No_Controle + 1
         else : question.No_Controle = 1
@@ -99,11 +99,11 @@ class motifAPI(Resource):
         motif = request.get_json()
         return motifAPI.postFinal(motif)
 
-    @cross_origin()
+
     def postFinal(raw_motif):
         motif = Motif(**raw_motif)
         motifs = mongo.db.motifs.find().sort('id_int', -1);
-        if motifs is not []:
+        if motifs:
             lastMotif = Motif(**motifs[0])
             motif.id_int = lastMotif.id_int + 1
         else:
@@ -186,7 +186,7 @@ class patientAPI(Resource):
     def postFinal(raw_patient):
         patient = Patient(**raw_patient)
         patients = mongo.db.patients.find().sort('id_int', -1);
-        if patients is not []:
+        if patients:
             lastPatient = Patient(**patients[0])
             patient.id_int = lastPatient.id_int + 1
         else : patient.id_int = 1;
