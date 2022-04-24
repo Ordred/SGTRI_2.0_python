@@ -2,6 +2,7 @@ import base64
 from msilib.schema import Binary
 import secrets
 from typing import List, Optional
+from numpy import byte
 from pydantic import BaseModel, Field
 from objectid import PydanticObjectId
 import pydantic
@@ -32,7 +33,7 @@ class Patient(BaseModel):
     temperature: float
     motifs: List
     questions: List
-
+    image: str
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)
 
