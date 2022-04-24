@@ -1,3 +1,4 @@
+import json
 import math
 from tabnanny import check
 from flask import Flask, jsonify, request
@@ -147,13 +148,19 @@ class patientAPI(Resource):
         {"id": PydanticObjectId(id)})
         return Patient(**patient).to_json()
 
+    @app.route("/patients/byidint/<int:id>", methods=["GET"])
+    @cross_origin()
+    def getPatientByID_int(id):
+        patient = mongo.db.patients.find_one_or_404({"id_int": id})
+        return Patient(**patient).to_json()
+
     @app.route("/patients/pictures/<int:id>", methods=["GET"])
     @cross_origin()
     def getPatientImgByIDint(id):
         imgdata = mongo.db.patients.find_one_or_404({"id_int": id})
-        imgjson = jsonify(imgdata)
-        print(imgjson)
-        return imgjson
+        imgjson = json.loads(json_util.dumps(imgdata))
+        img = imgjson["image"]["$binary"]["base64"]
+        return img
 
     @app.route("/patients/pictures/<int:id>", methods=["POST"])
     @cross_origin()
