@@ -13,8 +13,10 @@ class Patient(BaseModel):
     ID: Optional[PydanticObjectId] = Field(None, alias="_id")
     id_int: int
     gender: str
-    genre: int
+    name: str
+    description: str
     age: int
+    degree: int
     glasgow: int
     pupilles: str
     tas: List[int]
@@ -28,9 +30,8 @@ class Patient(BaseModel):
     douleurs: int
     pulse: int
     temperature: float
-    motifs: List[int]
+    motifs: List
     questions: List
-    image: bytes
 
     def to_json(self):
         return jsonable_encoder(self, exclude_none=True)
