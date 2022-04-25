@@ -333,4 +333,4 @@ api.add_resource(motifAPI, '/motifs')
 api.add_resource(patientAPI, '/patients')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0")
