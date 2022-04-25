@@ -159,7 +159,7 @@ class patientAPI(Resource):
     @cross_origin()
     def getPatientByIDint(id):
         patient = mongo.db.patients.find_one_or_404(
-        {"id": PydanticObjectId(id)})
+        {"id_int": id})
         return Patient(**patient).to_json()
 
     @app.route("/patients/byidint/<int:id>", methods=["GET"])
@@ -193,13 +193,11 @@ class patientAPI(Resource):
     def postFinal(raw_patient):
         patient = Patient(**raw_patient)
         patients = list(mongo.db.patients.find().sort('id_int', -1))
-        print(patients)
         if patients:
             lastPatient = Patient(**patients[0])
             patient.id_int = lastPatient.id_int + 1
         else : patient.id_int = 1;
         insert_result = mongo.db.patients.insert_one(patient.to_bson())
-        print(patient)
         return patient.to_json()
 
     @app.route("/patients/<int:id>", methods=["DELETE"])
