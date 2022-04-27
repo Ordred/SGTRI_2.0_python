@@ -293,21 +293,21 @@ class checkVitalsAPI(Resource):
     @cross_origin()
     def checkTEMP(temp):
         if temp < 32.0 : return jsonify({"degree": 1})
-        elif temp in np.arange(31,36, 0.01) or temp > 40.0: return jsonify({"degree": 2})
-        elif temp in np.arange(35.0,40.1, 0.01): return jsonify({"degree": 3})
+        elif temp >= 32.0 and temp <= 35.0 or temp > 40.0: return jsonify({"degree": 2})
+        elif temp >= 35.1 and temp <= 40.0: return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
     
     @app.route("/checkSUGAR/<float:sugar>", methods=["GET"])
     @cross_origin()
     def checkSUGAR(sugar):
-        if sugar < 4.0 or sugar > 25.0 : return jsonify({"degree": 2})
-        elif sugar in np.arange(3.9,25.0, 0.01): return jsonify({"degree": 3})
+        if sugar < 4.0 or sugar >= 25.0: return jsonify({"degree": 2})
+        elif sugar >= 4.0 and sugar <= 24.9: return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
 
     @app.route("/checkACENTONURIA/<float:acen>", methods=["GET"])
     @cross_origin()
     def checkACENTONURIA(acen):
-        if acen > 0.6: return jsonify({"degree": 2})
+        if acen >= 0.6: return jsonify({"degree": 2})
         elif acen < 0.6: return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
 
