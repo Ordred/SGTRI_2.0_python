@@ -3,7 +3,7 @@ import math
 import string
 from tabnanny import check
 from flask import Flask, jsonify, request
-from flask_cors import cross_origin
+from flask_cors import cross_origin, CORS
 from flask_restful import Api, Resource
 from motif import Motif
 from patient import Patient
@@ -22,6 +22,7 @@ from tag import Tag
 from motifquestion import MotifQuestion
 
 app = Flask(__name__)
+CORS(app)
 app.config["MONGO_URI"] = "mongodb+srv://hesso:LrnKxTD4CMngTQph@hesso.q1q2q.mongodb.net/sgtri2?retryWrites=true&w=majority"
 #app.config["MONGO_URI"] = "mongodb+srv://hesso:LrnKxTD4CMngTQph@cluster0.jaajphx.mongodb.net/?retryWrites=true&w=majority"
 mongo = PyMongo(app)
@@ -431,7 +432,7 @@ class loginAPI(Resource) :
         else : user.id_int = 1
         insert_result = mongo.db.users.insert_one(user.to_bson())
         return user.to_json()
-    
+
     #Delete Users
     @app.route("/logins/username/<string:id>", methods=["DELETE"])
     @cross_origin()
