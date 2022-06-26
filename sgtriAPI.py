@@ -1,5 +1,6 @@
 import json
 import math
+import string
 from tabnanny import check
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin
@@ -7,6 +8,7 @@ from flask_restful import Api, Resource
 from motif import Motif
 from patient import Patient
 from question import Question
+from user import User
 from flask_pymongo import PyMongo
 from objectid import PydanticObjectId
 from bson import json_util
@@ -21,9 +23,12 @@ from motifquestion import MotifQuestion
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb+srv://hesso:LrnKxTD4CMngTQph@hesso.q1q2q.mongodb.net/sgtri2?retryWrites=true&w=majority"
+#app.config["MONGO_URI"] = "mongodb+srv://hesso:LrnKxTD4CMngTQph@cluster0.jaajphx.mongodb.net/?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 api = Api(app)
 
+
+    
 #Methods to get and post question data
 class questionAPI(Resource):
     @app.route("/questions", methods=["GET"])
@@ -45,6 +50,8 @@ class questionAPI(Resource):
         question = mongo.db.questions.find_one_or_404(
             {"id": PydanticObjectId(id)})
         return Question(**question).to_json()
+    
+  
 
     @cross_origin()
     def post(self):
@@ -52,7 +59,8 @@ class questionAPI(Resource):
         questionAPI.postFinal(question)
 
     def postFinal(raw_question):
-        questions = list(mongo.db.questions.find().sort('No_Controle', -1))
+        if mongo.db.questions:
+            questions = list(mongo.db.questions.find().sort('No_Controle', -1))
         question = Question(**raw_question)
         if questions: 
             lastQuestion = Question(**questions[0])
@@ -106,7 +114,6 @@ class motifAPI(Resource):
         motif = request.get_json()
         return motifAPI.postFinal(motif)
 
-
     def postFinal(raw_motif):
         motif = Motif(**raw_motif)
         motifs = list(mongo.db.motifs.find().sort('id_int', -1))
@@ -141,33 +148,34 @@ class motifquestionAPI(Resource):
 
 #Methods to get and post patient data
 class patientAPI(Resource):
+    #Get All Patients
     @app.route("/patients", methods=["GET"])
     @cross_origin()
     def getAllPatients():
         patients = mongo.db.patients.find()
         documents = [doc for doc in patients]
         return json_util.dumps({'patientsList': documents})
-
+    #Get patient by id (string)
     @app.route("/patients/<string:id>", methods=["GET"])
     @cross_origin()
     def getPatientByID(id):
         patient = mongo.db.patients.find_one_or_404(
             {"id": PydanticObjectId(id)})
         return Patient(**patient).to_json()
-
+    #Get patient by id (int)
     @app.route("/patients/<int:id>", methods=["GET"])
     @cross_origin()
     def getPatientByIDint(id):
         patient = mongo.db.patients.find_one_or_404(
         {"id_int": id})
         return Patient(**patient).to_json()
-
+    #Get patient by id (string)
     @app.route("/patients/byidint/<int:id>", methods=["GET"])
     @cross_origin()
     def getPatientByID_int(id):
         patient = mongo.db.patients.find_one_or_404({"id_int": id})
         return Patient(**patient).to_json()
-
+    #GetPicture of patient
     @app.route("/patients/pictures/<int:id>", methods=["GET"])
     @cross_origin()
     def getPatientImgByIDint(id):
@@ -175,7 +183,7 @@ class patientAPI(Resource):
         imgjson = json.loads(json_util.dumps(imgdata))
         img = imgjson["image"]["$binary"]["base64"]
         return img
-
+    #Set Picure for one patient
     @app.route("/patients/pictures/<int:id>", methods=["POST"])
     @cross_origin()
     def postPatientImgByIDint(id):
@@ -184,6 +192,21 @@ class patientAPI(Resource):
         mongo.db.patients.update_one({"id_int":id},{ "$set": { "image":img } })
         return "done"
     
+    #test get questions
+    @app.route("/patients/questions/<string:id>", methods=["GET"])
+    @cross_origin()
+    def getQuestionByIDstringFromPatient(id):
+        patinetInt = int(id.split('p')[0])
+        patient = mongo.db.patients.find_one_or_404({"id_int": patinetInt})
+        questionsjson = json.loads(json_util.dumps(patient))
+        print("questionJson:",questionsjson["questions"])
+        documents = [doc for doc in questionsjson["questions"]]
+        return json_util.dumps({'questionsList': documents})
+        #question = patient.find({"questions":{"No_Controle":questionInt}})
+        #return Question(**question).to_json()
+       
+    
+    #Create new Vignette
     @cross_origin()
     def post(self):
         patient = request.get_json()
@@ -192,14 +215,34 @@ class patientAPI(Resource):
     @cross_origin()
     def postFinal(raw_patient):
         patient = Patient(**raw_patient)
+        print(patient.to_json(),"ID_int", patient.id_int)
         patients = list(mongo.db.patients.find().sort('id_int', -1))
         if patients:
             lastPatient = Patient(**patients[0])
             patient.id_int = lastPatient.id_int + 1
-        else : patient.id_int = 1;
+        else : patient.id_int = 1
         insert_result = mongo.db.patients.insert_one(patient.to_bson())
         return patient.to_json()
-
+    
+    #Replace Vignette by #Get patient by id (string)
+    @app.route("/patients/modify", methods=["Post"])
+    @cross_origin()
+    def post(self):
+        patient = request.get_json()
+        return patientAPI.postModifyFinal(patient)
+    @cross_origin()
+    def postModifyFinal(raw_patient):
+        patient = Patient(**raw_patient)
+        print(patient.to_json(),"ID_int", patient.id_int)
+        patients = list(mongo.db.patients.find().sort('id_int', -1))
+        if patients:
+            lastPatient = Patient(**patients[0])
+            patient.id_int = lastPatient.id_int + 1
+        else : patient.id_int = 1
+        insert_result = mongo.db.patients.insert_one(patient.to_bson())
+        return patient.to_json()
+        
+    #Delete Vignette by Id
     @app.route("/patients/<int:id>", methods=["DELETE"])
     @cross_origin()
     def deletePatientByIDint(id):
@@ -289,26 +332,29 @@ class checkVitalsAPI(Resource):
         elif peakfl >= 50 : return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
     
-    @app.route("/checkTEMP/<float:temp>", methods=["GET"])
+    @app.route("/checkTEMP/<string:temp>", methods=["GET"])
     @cross_origin()
     def checkTEMP(temp):
-        if temp < 32.0 : return jsonify({"degree": 1})
-        elif temp >= 32.0 and temp <= 35.0 or temp > 40.0: return jsonify({"degree": 2})
-        elif temp >= 35.1 and temp <= 40.0: return jsonify({"degree": 3})
+        tempfloat = float(temp)
+        if tempfloat < 32.0 : return jsonify({"degree": 1})
+        elif tempfloat >= 32.0 and tempfloat <= 35.0 or tempfloat > 40.0: return jsonify({"degree": 2})
+        elif tempfloat >= 35.1 and tempfloat <= 40.0: return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
     
-    @app.route("/checkSUGAR/<float:sugar>", methods=["GET"])
+    @app.route("/checkSUGAR/<string:sugar>", methods=["GET"])
     @cross_origin()
     def checkSUGAR(sugar):
-        if sugar < 4.0 or sugar >= 25.0: return jsonify({"degree": 2})
-        elif sugar >= 4.0 and sugar <= 24.9: return jsonify({"degree": 3})
+        sugarfloat = float(sugar)
+        if sugarfloat < 4.0 or sugarfloat >= 25.0: return jsonify({"degree": 2})
+        elif sugarfloat >= 4.0 and sugarfloat <= 24.9: return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
 
-    @app.route("/checkACENTONURIA/<float:acen>", methods=["GET"])
+    @app.route("/checkACENTONURIA/<string:acen>", methods=["GET"])
     @cross_origin()
     def checkACENTONURIA(acen):
-        if acen >= 0.6: return jsonify({"degree": 2})
-        elif acen < 0.6: return jsonify({"degree": 3})
+        acenfloat = float(acen)
+        if acenfloat >= 0.6: return jsonify({"degree": 2})
+        elif acenfloat < 0.6: return jsonify({"degree": 3})
         else: return jsonify({"degree": 4})
 
     @app.route("/checkDEP/<string:gender>/<int:age>/<int:size>", methods=["GET"])
@@ -321,16 +367,94 @@ class checkVitalsAPI(Resource):
             dep = math.exp((0.376*math.log(age))-(0.0120*age)-(58.8/size)+5.63)
         return jsonify({"dep": int(dep)})
 
+#Methods to get and post values user account
+class loginAPI(Resource) :
+    #Get All Users #works
+    @app.route("/logins/users", methods=["GET"])
+    @cross_origin()
+    def getAllUsers():
+        users = mongo.db.users.find()
+        documents = [doc for doc in users]
+        print("GetAllUser:", json_util.dumps({'userlist': documents}))
+        return json_util.dumps({'userlist': documents})
+
+    #Get user by id_int:Work
+    @app.route("/logins/users/<int:id>", methods=["GET"])
+    @cross_origin()
+    def getUsertByInt(id):
+        print("GetUsenameIsCalled:",id)
+        user = mongo.db.users.find_one_or_404({"id_int": id})
+        print(User(**user).to_json())
+        return User(**user).to_json()
+    
+    #Get User by username:Work
+    @app.route("/logins/username/<string:name>", methods=["GET"])
+    @cross_origin()
+    def getUsertByUsername(name):
+        print("GetUsenameIsCalled:",name)
+        user = mongo.db.users.find_one_or_404({"username": name})
+        print(User(**user).to_json())
+        return User(**user).to_json()
+    
+    #Check if Username exist
+    #@app.route("/logins/checkusername/<string:name>", methods=["GET"])
+    #@cross_origin()
+    #def CheckUsername(name):
+        print("GetUsenameIsCalled:",name)
+        user = mongo.db.users.find_one_or_404({"username": name})
+        print(User(**user).to_json())
+        users = list(mongo.db.users.find())
+        print("list of uers:", users)
+        for _user in users:
+            #print("user of list:", _user.username, " == ", user.username)
+            print("username to check:",User(**user).username)
+            print("user of list:", User(**_user).username)
+            if User(**_user).username != User(**user).username :
+                return "true"
+            else :
+                return "false"
+    
+    #Create new User working
+    @cross_origin()
+    def post(self):
+        user = request.get_json()
+        return loginAPI.postNewUser(user)
+
+    @cross_origin()
+    def postNewUser(raw_user):
+        user = User(**raw_user)
+        print(user.to_json(),"ID_int", user.id_int)
+        users = list(mongo.db.users.find().sort('id_int', -1))
+        if users:
+            lastUser = User(**users[0])
+            user.id_int = lastUser.id_int + 1
+        else : user.id_int = 1
+        insert_result = mongo.db.users.insert_one(user.to_bson())
+        return user.to_json()
+    
+    #Delete Users
+    @app.route("/logins/username/<string:id>", methods=["DELETE"])
+    @cross_origin()
+    def deleteUserByUsername(id):
+        user = mongo.db.users.find_one_or_404({"username": id})
+        print("user to delete :",User(**user).to_json())
+        mongo.db.users.delete_one({"username": id})
+        return "Patient " + str(id) + " deleted"
+    
+
 
 # '/motifquestions' is our entry point for the questions for different motifs
 api.add_resource(motifquestionAPI, '/motifquestions')
-api.add_resource(tagAPI, '/tags')  # '/tags' is our entry point for tags
+ # '/tags' is our entry point for tags
+api.add_resource(tagAPI, '/tags') 
 # '/questions' is our entry point for questions
 api.add_resource(questionAPI, '/questions')
 # '/motifs' is our entry point for motifs
 api.add_resource(motifAPI, '/motifs')
 # '/patients' is our entry point for patients
 api.add_resource(patientAPI, '/patients')
+# '/login' is our entry point for patients
+api.add_resource(loginAPI, '/logins')
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run(host="127.0.0.1")
