@@ -457,4 +457,4 @@ api.add_resource(patientAPI, '/patients')
 api.add_resource(loginAPI, '/logins')
 
 if __name__ == '__main__':
-    app.run(host="127.0.0.1")
+    app.run(host="0.0.0.0")
